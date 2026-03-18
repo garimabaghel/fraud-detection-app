@@ -2,7 +2,17 @@ import streamlit as st
 import joblib
 import pandas as pd
 from geopy.distance import geodesic
-# Category mapping (example)
+
+# City mapping
+city_coords = {
+    "Delhi": (28.6139, 77.2090),
+    "Mumbai": (19.0760, 72.8777),
+    "Bangalore": (12.9716, 77.5946),
+    "Chennai": (13.0827, 80.2707),
+    "Kolkata": (22.5726, 88.3639)
+}
+
+# Category mapping
 category_map = {
     "Food": 0,
     "Shopping": 1,
@@ -11,7 +21,7 @@ category_map = {
     "Health": 4
 }
 
-# Merchant mapping (example)
+# Merchant mapping
 merchant_map = {
     "Amazon": 0,
     "Walmart": 1,
@@ -20,12 +30,10 @@ merchant_map = {
     "eBay": 4
 }
 
-
 # Load model
 model = joblib.load("model.pkl")
 
 st.title("💳 Credit Card Fraud Detection System")
-
 st.write("Enter transaction details below:")
 
 # Inputs
@@ -39,23 +47,20 @@ merchant_name = st.selectbox("Merchant", list(merchant_map.keys()))
 category = category_map[category_name]
 merchant = merchant_map[merchant_name]
 
-lat = st.number_input("Customer Latitude")
-long = st.number_input("Customer Longitude")
+customer_city = st.selectbox("Customer City", list(city_coords.keys()))
+merchant_city = st.selectbox("Merchant City", list(city_coords.keys()))
 
-merch_lat = st.number_input("Merchant Latitude")
-merch_long = st.number_input("Merchant Longitude")
+lat, long = city_coords[customer_city]
+merch_lat, merch_long = city_coords[merchant_city]
 
 hour = st.slider("Hour", 0, 23)
 day = st.slider("Day", 1, 31)
 month = st.slider("Month", 1, 12)
 
 # Convert gender
-if gender == "Male":
-    gender_val = 0
-else:
-    gender_val = 1
+gender_val = 0 if gender == "Male" else 1
 
-# Auto calculate distance
+# Calculate distance AFTER coordinates exist
 distance = geodesic((lat, long), (merch_lat, merch_long)).km
 
 # Prediction
