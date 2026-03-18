@@ -44,8 +44,8 @@ gender = st.selectbox("Gender", ["Male", "Female"])
 category_name = st.selectbox("Category", list(category_map.keys()))
 merchant_name = st.selectbox("Merchant", list(merchant_map.keys()))
 
-category = category_map[category_name]
-merchant = merchant_map[merchant_name]
+category = 0
+merchant = 0
 
 customer_city = st.selectbox("Customer City", list(city_coords.keys()))
 merchant_city = st.selectbox("Merchant City", list(city_coords.keys()))
