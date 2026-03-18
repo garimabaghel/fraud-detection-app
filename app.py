@@ -2,6 +2,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 from geopy.distance import geodesic
+import time
 
 # City mapping
 city_coords = {
@@ -10,6 +11,15 @@ city_coords = {
     "Bangalore": (12.9716, 77.5946),
     "Chennai": (13.0827, 80.2707),
     "Kolkata": (22.5726, 88.3639)
+}
+
+# City population
+city_population = {
+    "Delhi": 19000000,
+    "Mumbai": 20000000,
+    "Bangalore": 12000000,
+    "Chennai": 11000000,
+    "Kolkata": 14000000
 }
 
 # Category mapping
@@ -44,8 +54,9 @@ gender = st.selectbox("Gender", ["Male", "Female"])
 category_name = st.selectbox("Category", list(category_map.keys()))
 merchant_name = st.selectbox("Merchant", list(merchant_map.keys()))
 
-category = 0
-merchant = 0
+# ✅ FIXED
+category = category_map[category_name]
+merchant = merchant_map[merchant_name]
 
 customer_city = st.selectbox("Customer City", list(city_coords.keys()))
 merchant_city = st.selectbox("Merchant City", list(city_coords.keys()))
@@ -60,14 +71,14 @@ month = st.slider("Month", 1, 12)
 # Convert gender
 gender_val = 0 if gender == "Male" else 1
 
-# Calculate distance AFTER coordinates exist
+# Distance
 distance = geodesic((lat, long), (merch_lat, merch_long)).km
 
 # Prediction
 if st.button("Check Fraud"):
 
-    city_pop = 1000000
-    unix_time = 1700000000
+    city_pop = city_population[customer_city]
+    unix_time = int(time.time())
 
     data = pd.DataFrame([[
         merchant, category, amt, gender_val,
@@ -81,10 +92,8 @@ if st.button("Check Fraud"):
         'hour', 'day', 'month', 'distance'
     ])
 
-    # 👉 ADD THIS (to see input data)
     st.write("Input Data:", data)
 
-    # 👉 ADD THIS (fraud probability)
     prob = model.predict_proba(data)[0][1]
     st.write(f"Fraud Probability: {prob:.2f}")
 
