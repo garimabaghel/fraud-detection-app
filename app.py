@@ -78,7 +78,7 @@ distance = geodesic((lat, long), (merch_lat, merch_long)).km
 if st.button("Check Fraud"):
 
     city_pop = city_population[customer_city]
-    unix_time = int(time.time())
+    unix_time = 1700000000
 
     data = pd.DataFrame([[
         merchant, category, amt, gender_val,
