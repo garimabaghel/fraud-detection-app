@@ -105,3 +105,10 @@ if st.button("Check Fraud"):
         st.warning("⚠️ Medium Risk Transaction")
     else:
         st.success("✅ Low Risk / Legitimate Transaction")
+
+
+# Adjust probability based on amount (stabilization)
+if amt > 50000:
+    prob += 0.2
+elif amt < 1000:
+    prob -= 0.1
