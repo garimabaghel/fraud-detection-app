@@ -1,18 +1,22 @@
 import streamlit as st
 import joblib
 import pandas as pd
+from geopy.distance import geodesic
 
 # Load model
 model = joblib.load("model.pkl")
 
-st.title("💳 Credit Card Fraud Detection")
+st.title("💳 Credit Card Fraud Detection System")
 
-st.write("Enter transaction details:")
+st.write("Enter transaction details below:")
 
-amt = st.number_input("Amount")
-gender = st.number_input("Gender (0=Male, 1=Female)")
-category = st.number_input("Category")
-merchant = st.number_input("Merchant")
+# Inputs
+amt = st.number_input("Transaction Amount")
+
+gender = st.selectbox("Gender", ["Male", "Female"])
+
+category = st.number_input("Category (encoded value)")
+merchant = st.number_input("Merchant (encoded value)")
 
 lat = st.number_input("Customer Latitude")
 long = st.number_input("Customer Longitude")
@@ -20,16 +24,24 @@ long = st.number_input("Customer Longitude")
 merch_lat = st.number_input("Merchant Latitude")
 merch_long = st.number_input("Merchant Longitude")
 
-hour = st.number_input("Hour")
-day = st.number_input("Day")
-month = st.number_input("Month")
+hour = st.slider("Hour", 0, 23)
+day = st.slider("Day", 1, 31)
+month = st.slider("Month", 1, 12)
 
-distance = st.number_input("Distance")
+# Convert gender
+if gender == "Male":
+    gender_val = 0
+else:
+    gender_val = 1
 
+# Auto calculate distance
+distance = geodesic((lat, long), (merch_lat, merch_long)).km
+
+# Prediction
 if st.button("Check Fraud"):
 
     data = pd.DataFrame([[
-        merchant, category, amt, gender,
+        merchant, category, amt, gender_val,
         lat, long, merch_lat, merch_long,
         hour, day, month, distance
     ]], columns=[
@@ -41,6 +53,6 @@ if st.button("Check Fraud"):
     prediction = model.predict(data)
 
     if prediction[0] == 1:
-        st.error("🚨 Fraudulent Transaction")
+        st.error("🚨 Fraudulent Transaction Detected!")
     else:
-        st.success("✅ Legit Transaction")
+        st.success("✅ Legitimate Transaction")
