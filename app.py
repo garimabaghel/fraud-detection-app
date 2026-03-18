@@ -33,8 +33,11 @@ amt = st.number_input("Transaction Amount")
 
 gender = st.selectbox("Gender", ["Male", "Female"])
 
-category = st.number_input("Category (encoded value)")
-merchant = st.number_input("Merchant (encoded value)")
+category_name = st.selectbox("Category", list(category_map.keys()))
+merchant_name = st.selectbox("Merchant", list(merchant_map.keys()))
+
+category = category_map[category_name]
+merchant = merchant_map[merchant_name]
 
 lat = st.number_input("Customer Latitude")
 long = st.number_input("Customer Longitude")
