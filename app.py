@@ -66,7 +66,6 @@ distance = geodesic((lat, long), (merch_lat, merch_long)).km
 # Prediction
 if st.button("Check Fraud"):
 
-    # Dummy values (required by model)
     city_pop = 1000000
     unix_time = 1700000000
 
@@ -81,6 +80,13 @@ if st.button("Check Fraud"):
         'merch_lat', 'merch_long',
         'hour', 'day', 'month', 'distance'
     ])
+
+    # 👉 ADD THIS (to see input data)
+    st.write("Input Data:", data)
+
+    # 👉 ADD THIS (fraud probability)
+    prob = model.predict_proba(data)[0][1]
+    st.write(f"Fraud Probability: {prob:.2f}")
 
     prediction = model.predict(data)
 
