@@ -119,8 +119,4 @@ st.write(f"Fraud Probability: {prob:.2f}")
         st.success("✅ Low Risk / Legitimate Transaction")
 
 
-# Adjust probability based on amount (stabilization)
-if amt > 50000:
-    prob += 0.2
-elif amt < 1000:
-    prob -= 0.1
+
