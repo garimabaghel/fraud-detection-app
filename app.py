@@ -99,7 +99,7 @@ if st.button("Check Fraud"):
 
     prediction = model.predict(data)
 
-    if prob > 0.2:
+    if prob > 0.1:
         st.error("🚨 Fraudulent Transaction Detected!")
     else:
         st.success("✅ Legitimate Transaction")
