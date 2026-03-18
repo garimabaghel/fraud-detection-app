@@ -66,13 +66,19 @@ distance = geodesic((lat, long), (merch_lat, merch_long)).km
 # Prediction
 if st.button("Check Fraud"):
 
+    # Dummy values (required by model)
+    city_pop = 1000000
+    unix_time = 1700000000
+
     data = pd.DataFrame([[
         merchant, category, amt, gender_val,
-        lat, long, merch_lat, merch_long,
+        lat, long, city_pop, unix_time,
+        merch_lat, merch_long,
         hour, day, month, distance
     ]], columns=[
         'merchant', 'category', 'amt', 'gender',
-        'lat', 'long', 'merch_lat', 'merch_long',
+        'lat', 'long', 'city_pop', 'unix_time',
+        'merch_lat', 'merch_long',
         'hour', 'day', 'month', 'distance'
     ])
 
