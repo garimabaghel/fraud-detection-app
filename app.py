@@ -116,3 +116,5 @@ if st.button("Check Fraud"):
         st.warning("⚠️ Medium Risk Transaction")
     else:
         st.success("✅ Low Risk / Legitimate Transaction")
+
+    st.write("🔍 This prediction is based on behavioral patterns and transaction context.")
