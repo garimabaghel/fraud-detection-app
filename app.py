@@ -2,6 +2,24 @@ import streamlit as st
 import joblib
 import pandas as pd
 from geopy.distance import geodesic
+# Category mapping (example)
+category_map = {
+    "Food": 0,
+    "Shopping": 1,
+    "Travel": 2,
+    "Entertainment": 3,
+    "Health": 4
+}
+
+# Merchant mapping (example)
+merchant_map = {
+    "Amazon": 0,
+    "Walmart": 1,
+    "Target": 2,
+    "Starbucks": 3,
+    "eBay": 4
+}
+
 
 # Load model
 model = joblib.load("model.pkl")
