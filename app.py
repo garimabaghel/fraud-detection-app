@@ -95,6 +95,18 @@ if st.button("Check Fraud"):
     st.write("Input Data:", data)
 
     prob = model.predict_proba(data)[0][1]
+    prob = model.predict_proba(data)[0][1]
+
+    # Adjust probability based on amount (stabilization)
+    if amt > 50000:
+        prob += 0.2
+    elif amt < 1000:
+        prob -= 0.1
+
+# Clamp probability between 0 and 1
+prob = max(0, min(prob, 1))
+
+st.write(f"Fraud Probability: {prob:.2f}")
     st.write(f"Fraud Probability: {prob:.2f}")
 
     prediction = model.predict(data)
