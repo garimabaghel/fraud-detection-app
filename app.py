@@ -2,16 +2,42 @@ import streamlit as st
 import joblib
 import pandas as pd
 from geopy.distance import geodesic
-import time
 
 # Page config
 st.set_page_config(page_title="Fraud Detection", layout="wide")
 
-# Title
-st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>💳 Credit Card Fraud Detection</h1>", unsafe_allow_html=True)
-st.markdown("---")
+# ---------- CUSTOM CSS ----------
+st.markdown("""
+<style>
+.main {
+    background-color: #0E1117;
+}
+h1 {
+    color: #FF4B4B;
+    text-align: center;
+}
+.card {
+    background-color: #1c1f26;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
+    margin-bottom: 20px;
+}
+.result-card {
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# City mapping
+# ---------- TITLE ----------
+st.markdown("<h1>💳 Credit Card Fraud Detection</h1>", unsafe_allow_html=True)
+st.caption("AI-powered system for real-time fraud detection")
+
+# ---------- DATA ----------
 city_coords = {
     "Delhi": (28.6139, 77.2090),
     "Mumbai": (19.0760, 72.8777),
@@ -20,7 +46,6 @@ city_coords = {
     "Kolkata": (22.5726, 88.3639)
 }
 
-# City population
 city_population = {
     "Delhi": 19000000,
     "Mumbai": 20000000,
@@ -29,7 +54,6 @@ city_population = {
     "Kolkata": 14000000
 }
 
-# Category mapping
 category_map = {
     "Food": 0,
     "Shopping": 1,
@@ -38,7 +62,6 @@ category_map = {
     "Health": 4
 }
 
-# Merchant mapping
 merchant_map = {
     "Amazon": 0,
     "Walmart": 1,
@@ -50,9 +73,10 @@ merchant_map = {
 # Load model
 model = joblib.load("model.pkl")
 
+# ---------- INPUT SECTION ----------
+st.markdown('<div class="card">', unsafe_allow_html=True)
 st.subheader("🔍 Enter Transaction Details")
 
-# Layout in columns
 col1, col2 = st.columns(2)
 
 with col1:
@@ -68,20 +92,20 @@ with col2:
     day = st.slider("📅 Day", 1, 31)
     month = st.slider("📆 Month", 1, 12)
 
-# Encoding
+st.markdown('</div>', unsafe_allow_html=True)
+
+# ---------- PROCESS ----------
 category = category_map[category_name]
 merchant = merchant_map[merchant_name]
 gender_val = 0 if gender == "Male" else 1
 
-# Coordinates
 lat, long = city_coords[customer_city]
 merch_lat, merch_long = city_coords[merchant_city]
 
-# Distance
 distance = geodesic((lat, long), (merch_lat, merch_long)).km
 
-# Prediction
-if st.button("🚀 Check Fraud"):
+# ---------- BUTTON ----------
+if st.button("🚀 Analyze Transaction"):
 
     city_pop = city_population[customer_city]
     unix_time = 1700000000
@@ -108,16 +132,27 @@ if st.button("🚀 Check Fraud"):
 
     prob = max(0, min(prob, 1))
 
-    st.markdown("---")
+    # ---------- RESULT UI ----------
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.subheader("📊 Analysis Result")
 
-    # Result display
-    st.subheader("📊 Prediction Result")
-
-    st.metric(label="Fraud Probability", value=f"{prob:.2f}")
+    st.progress(int(prob * 100))
+    st.write(f"**Fraud Probability:** {prob:.2f}")
 
     if prob > 0.4:
-        st.error("🚨 High Risk Fraud Transaction!")
+        st.markdown(
+            '<div class="result-card" style="background-color:#ff4b4b;">🚨 HIGH RISK FRAUD</div>',
+            unsafe_allow_html=True
+        )
     elif prob > 0.25:
-        st.warning("⚠️ Medium Risk Transaction")
+        st.markdown(
+            '<div class="result-card" style="background-color:#f39c12;">⚠️ MEDIUM RISK</div>',
+            unsafe_allow_html=True
+        )
     else:
-        st.success("✅ Low Risk / Legitimate Transaction")
+        st.markdown(
+            '<div class="result-card" style="background-color:#2ecc71;">✅ LOW RISK</div>',
+            unsafe_allow_html=True
+        )
+
+    st.markdown('</div>', unsafe_allow_html=True)
