@@ -156,29 +156,23 @@ with col3:
 st.markdown("---")
 
 # Risk Level Display
-if prob > 0.25:
-    st.markdown("### 🧠 Why this result?")
-
-    reasons = []
-
-    if distance > 1000:
-        reasons.append("📍 Large distance between customer and merchant")
-
-    if hour < 6 or hour > 22:
-        reasons.append("🌙 Transaction at unusual time")
-
-    if amt > 50000:
-        reasons.append("💰 High transaction amount")
-
-    if amt < 1000:
-        reasons.append("🔍 Very small test transaction")
-
-    for r in reasons:
-        st.write("•", r)
-
+# ---------- FINAL DECISION ----------
+if prob > 0.4:
+    final_label = "🚨 Fraudulent Transaction"
+    risk_level = "High Risk"
+elif prob > 0.25:
+    final_label = "⚠️ Suspicious Transaction"
+    risk_level = "Medium Risk"
 else:
-    st.markdown("### 🧠 Why this result?")
-    st.write("✔️ Overall transaction pattern matches normal behavior based on model learning")
+    final_label = "✅ Legitimate Transaction"
+    risk_level = "Low Risk"
+
+# ---------- DISPLAY ----------
+st.markdown("## 🧾 Final Decision")
+st.success(final_label)
+
+st.markdown(f"### 📊 Risk Level: {risk_level}")
+st.write(f"Fraud Probability: {prob:.2f}")
 
 # ---------- EXPLANATION (VERY IMPORTANT FOR VIVA) ----------
 st.markdown("### 🧠 Why this result?")
