@@ -6,35 +6,8 @@ from geopy.distance import geodesic
 # Page config
 st.set_page_config(page_title="Fraud Detection", layout="wide")
 
-# ---------- CUSTOM CSS ----------
-st.markdown("""
-<style>
-.main {
-    background-color: #0E1117;
-}
-h1 {
-    color: #FF4B4B;
-    text-align: center;
-}
-.card {
-    background-color: #1c1f26;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
-    margin-bottom: 20px;
-}
-.result-card {
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-}
-</style>
-""", unsafe_allow_html=True)
-
 # ---------- TITLE ----------
-st.markdown("<h1>💳 Credit Card Fraud Detection</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;color:#FF4B4B;'>💳 Credit Card Fraud Detection</h1>", unsafe_allow_html=True)
 st.caption("AI-powered system for real-time fraud detection")
 
 # ---------- DATA ----------
@@ -73,8 +46,7 @@ merchant_map = {
 # Load model
 model = joblib.load("model.pkl")
 
-# ---------- INPUT SECTION ----------
-st.markdown('<div class="card">', unsafe_allow_html=True)
+# ---------- INPUT ----------
 st.subheader("🔍 Enter Transaction Details")
 
 col1, col2 = st.columns(2)
@@ -91,8 +63,6 @@ with col2:
     hour = st.slider("⏰ Hour", 0, 23)
     day = st.slider("📅 Day", 1, 31)
     month = st.slider("📆 Month", 1, 12)
-
-st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- PROCESS ----------
 category = category_map[category_name]
@@ -122,80 +92,32 @@ if st.button("🚀 Analyze Transaction"):
         'hour', 'day', 'month', 'distance'
     ])
 
+    # Prediction
     prob = model.predict_proba(data)[0][1]
 
-    # Adjust probability
+    # Small adjustment (optional)
     if amt > 50000:
-        prob += 0.2
+        prob += 0.1
     elif amt < 1000:
-        prob -= 0.1
+        prob -= 0.05
 
     prob = max(0, min(prob, 1))
 
-    # ---------- RESULT UI ----------
-    # ---------- RESULT UI ----------
-st.markdown('<div class="card">', unsafe_allow_html=True)
+    # ---------- RESULT ----------
+    st.markdown("## 📊 Transaction Risk Analysis")
 
-st.subheader("📊 Transaction Risk Analysis")
+    col1, col2 = st.columns(2)
 
-# Progress Bar
-st.progress(int(prob * 100))
+    with col1:
+        st.metric("💰 Amount", f"₹{amt}")
 
-# Big Metric
-col1, col2, col3 = st.columns(3)
+    with col2:
+        st.metric("⚠️ Fraud Probability", f"{prob:.2f}")
 
-with col1:
-    st.metric("💰 Amount", f"₹{amt}")
-
-with col2:
-    st.metric("📍 Distance (km)", f"{distance:.2f}")
-
-with col3:
-    st.metric("⚠️ Fraud Probability", f"{prob:.2f}")
-
-st.markdown("---")
-
-# Risk Level Display
-# ---------- FINAL DECISION ----------
-# ---------- RULE-BASED RISK SCORE ----------
-st.markdown("### 🧠 Why this result?")
-
-reasons = []
-
-if distance > 1000:
-    reasons.append("📍 Large distance between customer and merchant")
-
-if hour < 6 or hour > 22:
-    reasons.append("🌙 Transaction at unusual time")
-
-if amt > 50000:
-    reasons.append("💰 High transaction amount")
-
-if amt < 1000:
-    reasons.append("🔍 Small test transaction pattern")
-
-if reasons:
-    for r in reasons:
-        st.write("•", r)
-else:
-    st.write("✔️ Transaction behavior is normal")
-
-# ---------- FINAL DECISION (HYBRID) ----------
-if prob > 0.4 or rule_score >= 2:
-    final_label = "🚨 Fraudulent Transaction"
-    risk_level = "High Risk"
-
-elif prob > 0.25 or rule_score == 1:
-    final_label = "⚠️ Suspicious Transaction"
-    risk_level = "Medium Risk"
-
-else:
-    final_label = "✅ Legitimate Transaction"
-    risk_level = "Low Risk"
-
-# ---------- DISPLAY ----------
-st.markdown("## 🧾 Final Decision")
-st.success(final_label)
-
-st.markdown(f"### 📊 Risk Level: {risk_level}")
-st.write(f"Fraud Probability: {prob:.2f}")
+    # Risk classification
+    if prob > 0.4:
+        st.error("🚨 High Risk Transaction (Fraudulent)")
+    elif prob > 0.25:
+        st.warning("⚠️ Medium Risk Transaction (Suspicious)")
+    else:
+        st.success("✅ Low Risk / Legitimate Transaction")
