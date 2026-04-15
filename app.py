@@ -158,19 +158,27 @@ st.markdown("---")
 # Risk Level Display
 # ---------- FINAL DECISION ----------
 # ---------- RULE-BASED RISK SCORE ----------
-rule_score = 0
+st.markdown("### 🧠 Why this result?")
+
+reasons = []
 
 if distance > 1000:
-    rule_score += 1
+    reasons.append("📍 Large distance between customer and merchant")
 
 if hour < 6 or hour > 22:
-    rule_score += 1
+    reasons.append("🌙 Transaction at unusual time")
 
 if amt > 50000:
-    rule_score += 1
+    reasons.append("💰 High transaction amount")
 
 if amt < 1000:
-    rule_score += 1
+    reasons.append("🔍 Small test transaction pattern")
+
+if reasons:
+    for r in reasons:
+        st.write("•", r)
+else:
+    st.write("✔️ Transaction behavior is normal")
 
 # ---------- FINAL DECISION (HYBRID) ----------
 if prob > 0.4 or rule_score >= 2:
