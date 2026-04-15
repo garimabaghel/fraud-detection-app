@@ -133,26 +133,66 @@ if st.button("🚀 Analyze Transaction"):
     prob = max(0, min(prob, 1))
 
     # ---------- RESULT UI ----------
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.subheader("📊 Analysis Result")
+    # ---------- RESULT UI ----------
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
-    st.progress(int(prob * 100))
-    st.write(f"**Fraud Probability:** {prob:.2f}")
+st.subheader("📊 Transaction Risk Analysis")
 
-    if prob > 0.4:
-        st.markdown(
-            '<div class="result-card" style="background-color:#ff4b4b;">🚨 HIGH RISK FRAUD</div>',
-            unsafe_allow_html=True
-        )
-    elif prob > 0.25:
-        st.markdown(
-            '<div class="result-card" style="background-color:#f39c12;">⚠️ MEDIUM RISK</div>',
-            unsafe_allow_html=True
-        )
-    else:
-        st.markdown(
-            '<div class="result-card" style="background-color:#2ecc71;">✅ LOW RISK</div>',
-            unsafe_allow_html=True
-        )
+# Progress Bar
+st.progress(int(prob * 100))
 
-    st.markdown('</div>', unsafe_allow_html=True)
+# Big Metric
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric("💰 Amount", f"₹{amt}")
+
+with col2:
+    st.metric("📍 Distance (km)", f"{distance:.2f}")
+
+with col3:
+    st.metric("⚠️ Fraud Probability", f"{prob:.2f}")
+
+st.markdown("---")
+
+# Risk Level Display
+if prob > 0.4:
+    st.markdown(
+        '<div class="result-card" style="background: linear-gradient(90deg,#ff4b4b,#ff0000);">🚨 HIGH RISK FRAUD TRANSACTION</div>',
+        unsafe_allow_html=True
+    )
+elif prob > 0.25:
+    st.markdown(
+        '<div class="result-card" style="background: linear-gradient(90deg,#f39c12,#e67e22);">⚠️ MEDIUM RISK TRANSACTION</div>',
+        unsafe_allow_html=True
+    )
+else:
+    st.markdown(
+        '<div class="result-card" style="background: linear-gradient(90deg,#2ecc71,#27ae60);">✅ LOW RISK TRANSACTION</div>',
+        unsafe_allow_html=True
+    )
+
+# ---------- EXPLANATION (VERY IMPORTANT FOR VIVA) ----------
+st.markdown("### 🧠 Why this result?")
+
+reasons = []
+
+if distance > 1000:
+    reasons.append("📍 Large distance between customer and merchant")
+
+if hour < 6 or hour > 22:
+    reasons.append("🌙 Transaction at unusual time")
+
+if amt > 50000:
+    reasons.append("💰 High transaction amount")
+
+if amt < 1000:
+    reasons.append("🔍 Very small test transaction (common in fraud)")
+
+if not reasons:
+    reasons.append("✔️ Transaction pattern looks normal")
+
+for r in reasons:
+    st.write("•", r)
+
+st.markdown('</div>', unsafe_allow_html=True)
