@@ -115,9 +115,9 @@ if st.button("🚀 Analyze Transaction"):
         st.metric("⚠️ Fraud Probability", f"{prob:.2f}")
 
     # Risk classification
-    if prob > 0.4:
+    if prob > 0.55:
         st.error("🚨 High Risk")
-    elif prob > 0.25:
+    elif prob > 0.30:
         st.warning("⚠️ Medium Risk")
     else:
         st.success("✅ Low Risk")
