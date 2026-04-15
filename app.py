@@ -156,21 +156,29 @@ with col3:
 st.markdown("---")
 
 # Risk Level Display
-if prob > 0.4:
-    st.markdown(
-        '<div class="result-card" style="background: linear-gradient(90deg,#ff4b4b,#ff0000);">🚨 HIGH RISK FRAUD TRANSACTION</div>',
-        unsafe_allow_html=True
-    )
-elif prob > 0.25:
-    st.markdown(
-        '<div class="result-card" style="background: linear-gradient(90deg,#f39c12,#e67e22);">⚠️ MEDIUM RISK TRANSACTION</div>',
-        unsafe_allow_html=True
-    )
+if prob > 0.25:
+    st.markdown("### 🧠 Why this result?")
+
+    reasons = []
+
+    if distance > 1000:
+        reasons.append("📍 Large distance between customer and merchant")
+
+    if hour < 6 or hour > 22:
+        reasons.append("🌙 Transaction at unusual time")
+
+    if amt > 50000:
+        reasons.append("💰 High transaction amount")
+
+    if amt < 1000:
+        reasons.append("🔍 Very small test transaction")
+
+    for r in reasons:
+        st.write("•", r)
+
 else:
-    st.markdown(
-        '<div class="result-card" style="background: linear-gradient(90deg,#2ecc71,#27ae60);">✅ LOW RISK TRANSACTION</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown("### 🧠 Why this result?")
+    st.write("✔️ Overall transaction pattern matches normal behavior based on model learning")
 
 # ---------- EXPLANATION (VERY IMPORTANT FOR VIVA) ----------
 st.markdown("### 🧠 Why this result?")
