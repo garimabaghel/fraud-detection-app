@@ -116,8 +116,8 @@ if st.button("🚀 Analyze Transaction"):
 
     # Risk classification
     if prob > 0.4:
-        st.error("🚨 High Risk Transaction (Fraudulent)")
+        st.error("🚨 High Risk")
     elif prob > 0.25:
-        st.warning("⚠️ Medium Risk Transaction (Suspicious)")
+        st.warning("⚠️ Medium Risk")
     else:
-        st.success("✅ Low Risk / Legitimate Transaction")
+        st.success("✅ Low Risk")
